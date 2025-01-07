@@ -1,14 +1,40 @@
 package com.skillcanvas.accounts.controller;
 
 
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RestController;
+import com.skillcanvas.accounts.constants.AccountsConstants;
+import com.skillcanvas.accounts.dto.CustomerDto;
+import com.skillcanvas.accounts.dto.ResponseDto;
+import com.skillcanvas.accounts.service.IAccountsService;
+import lombok.AllArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
+@RequestMapping(path = "/api" , produces = {MediaType.APPLICATION_JSON_VALUE})
+@AllArgsConstructor
 public class AccountsController {
 
-    @GetMapping("/hello")
-    public String sayHello() {
-        return "Hello  from AccountsController";
+    private IAccountsService iAccountsService;
+
+    @PostMapping("/create")
+    public ResponseEntity<ResponseDto> createAccount(@RequestBody CustomerDto customerDto) {
+
+        iAccountsService.createAccount(customerDto);
+
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(new ResponseDto(AccountsConstants.STATUS_201,AccountsConstants.MESSAGE_201));
     }
+
+    @GetMapping("/fetch")
+    public ResponseEntity<CustomerDto> fetchAccountsDetails(@RequestParam String mobileNumber){
+          CustomerDto customerDto = iAccountsService.fetchAccountsDetails(mobileNumber);
+          return ResponseEntity.status(HttpStatus.OK).body(customerDto);
+
+    }
+
+
+
 }
