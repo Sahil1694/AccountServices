@@ -10,7 +10,26 @@ public interface IAccountsService {
      */
     void createAccount(CustomerDto customerDto);
 
-
+    /**
+     * Fetch account details
+     * @param mobileNumber
+     * @return CustomerDto
+     */
     CustomerDto fetchAccountsDetails(String mobileNumber);
+
+    /**
+     * Update account details
+     * @param customerDto
+     */
+    boolean updateAccount(CustomerDto customerDto);
+
+    /**
+     * Delete account details
+     * @param mobileNumber
+     */
+    boolean deleteAccount(String mobileNumber);
+
+
+
 
 }
