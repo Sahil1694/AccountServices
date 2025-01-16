@@ -16,8 +16,8 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
-import lombok.Value;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -39,7 +39,8 @@ public class AccountsController {
         this.iAccountsService = iAccountsService;
     }
 
-
+    @Value("${build.version}")
+    private String buildVersion;
 
     @Autowired
     private Environment environment;
@@ -95,10 +96,10 @@ public class AccountsController {
     )
     @GetMapping("/fetch")
     public ResponseEntity<CustomerDto> fetchAccountsDetails(@RequestParam
-                                                                @Pattern(regexp = "^[0-9]{10}$", message = "Mobile number should be 10 digits")
-                                                                String mobileNumber){
-          CustomerDto customerDto = iAccountsService.fetchAccountsDetails(mobileNumber);
-          return ResponseEntity.status(HttpStatus.OK).body(customerDto);
+                                                            @Pattern(regexp = "^[0-9]{10}$", message = "Mobile number should be 10 digits")
+                                                            String mobileNumber){
+        CustomerDto customerDto = iAccountsService.fetchAccountsDetails(mobileNumber);
+        return ResponseEntity.status(HttpStatus.OK).body(customerDto);
     }
 
     @Operation(
@@ -161,8 +162,8 @@ public class AccountsController {
     )
     @DeleteMapping("/delete")
     public ResponseEntity<ResponseDto>deleteAccountDetails(@RequestParam
-                                                               @Pattern(regexp = "^[0-9]{10}$", message = "Mobile number should be 10 digits")
-                                                               String mobileNumber){
+                                                           @Pattern(regexp = "^[0-9]{10}$", message = "Mobile number should be 10 digits")
+                                                           String mobileNumber){
         boolean isDeleted = iAccountsService.deleteAccount(mobileNumber);
         if(isDeleted){
             return ResponseEntity
@@ -175,31 +176,56 @@ public class AccountsController {
         }
     }
 
+    @Operation(
+            summary = "Get Java version",
+            description = "Get Java versions details that is installed into accounts microservice"
+    )
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "HTTP Status OK"
+            ),
+            @ApiResponse(
+                    responseCode = "500",
+                    description = "HTTP Status Internal Server Error",
+                    content = @Content(
+                            schema = @Schema(implementation = ErrorResponseDto.class)
+                    )
+            )
+    }
+    )
+    @GetMapping("/java-version")
+    public ResponseEntity<String> getJavaVersion() {
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(environment.getProperty("JAVA_HOME"));
+    }
 
-//    @Operation(
-//            summary = "Get Build information",
-//            description = "Get Build information that is deployed into accounts microservice"
-//    )
-//    @ApiResponses({
-//            @ApiResponse(
-//                    responseCode = "200",
-//                    description = "HTTP Status OK"
-//            ),
-//            @ApiResponse(
-//                    responseCode = "500",
-//                    description = "HTTP Status Internal Server Error",
-//                    content = @Content(
-//                            schema = @Schema(implementation = ErrorResponseDto.class)
-//                    )
-//            )
-//    }
-//    )
-//    @GetMapping("/build-info")
-//    public ResponseEntity<String> getBuildInfo() {
-//        return ResponseEntity
-//                .status(HttpStatus.OK)
-//                .body(buildVersion);
-//    }
+
+    @Operation(
+            summary = "Get Build information",
+            description = "Get Build information that is deployed into accounts microservice"
+    )
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "HTTP Status OK"
+            ),
+            @ApiResponse(
+                    responseCode = "500",
+                    description = "HTTP Status Internal Server Error",
+                    content = @Content(
+                            schema = @Schema(implementation = ErrorResponseDto.class)
+                    )
+            )
+    }
+    )
+    @GetMapping("/build-info")
+    public ResponseEntity<String> getBuildInfo() {
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(buildVersion);
+    }
 
 
     @Operation(
