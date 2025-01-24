@@ -1,5 +1,6 @@
 package com.skillcanvas.accounts.mapper;
 
+import com.skillcanvas.accounts.dto.CustomerDetailsDto;
 import com.skillcanvas.accounts.dto.CustomerDto;
 import com.skillcanvas.accounts.entiity.Customer;
 
@@ -16,6 +17,13 @@ public class CustomerMapper {
         customer.setEmail(customerDto.getEmail());
         customer.setMobileNumber(customerDto.getMobileNumber());
         return customer;
+    }
+
+    public static CustomerDetailsDto mapToCustomerDetailsDto(Customer customer, CustomerDetailsDto customerDetailsDto) {
+        customerDetailsDto.setName(customer.getName());
+        customerDetailsDto.setEmail(customer.getEmail());
+        customerDetailsDto.setMobileNumber(customer.getMobileNumber());
+        return customerDetailsDto;
     }
 }
 
